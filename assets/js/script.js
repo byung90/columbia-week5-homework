@@ -8,21 +8,27 @@ $('#currentDay').text(moment().format("dddd, MMM Do YY"));
 //Count Time
 function renderTime() {
   currentHour = moment().format("H");
+
   if (currentHour >= 9 && currentHour <= 17) {
-    if (trackHour !== currentHour) {
-      let scheduleLoop = $('#time-table').children().children();
-      let loopIndex = currentHour - 9;
-      scheduleLoop[loopIndex].children('.textarea-field').children().addClass('past');
+    if (trackHour < currentHour) {
+      let scheduleList = $('#time-table').children().children();
+      let scheduleIndex = currentHour - 9;
+      $(scheduleList[scheduleIndex]).children('.textarea-field').children().addClass('present');
+      $(scheduleList[scheduleIndex - 1]).children('.textarea-field').children().removeClass('present');
+      $(scheduleList[scheduleIndex - 1]).children('.textarea-field').children().addClass('past');
+      trackHour++;
     }
   }
 }
 
 //Set Calender Initial Color
 function setCalendarInitialColor() {
-  // let loopIndex = trackHour - 9;
-  // for (let i=loopIndex; i; i++){
-
-  // }
+  let scheduleList = $('#time-table').children().children();
+  let scheduleIndex = trackHour - 10;
+  $(scheduleList[scheduleIndex + 1]).children('.textarea-field').children().addClass('present');
+  for (let i = scheduleIndex; i >= 0; i--) {
+    $(scheduleList[i]).children('.textarea-field').children().addClass('past');
+  }
 }
 
 
@@ -97,4 +103,5 @@ function loadSchedule() {
 }
 
 loadSchedule();
+setCalendarInitialColor();
 setInterval(renderTime, 1000);
