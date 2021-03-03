@@ -1,5 +1,32 @@
 var schedules;
+var currentHour;
+var trackHour = moment().format("H"); //tracking hour to change color
 
+//Display Current Time
+$('#currentDay').text(moment().format("dddd, MMM Do YY"));
+
+//Count Time
+function renderTime() {
+  currentHour = moment().format("H");
+  if (currentHour >= 9 && currentHour <= 17) {
+    if (trackHour !== currentHour) {
+      let scheduleLoop = $('#time-table').children().children();
+      let loopIndex = currentHour - 9;
+      scheduleLoop[loopIndex].children('.textarea-field').children().addClass('past');
+    }
+  }
+}
+
+//Set Calender Initial Color
+function setCalendarInitialColor() {
+  // let loopIndex = trackHour - 9;
+  // for (let i=loopIndex; i; i++){
+
+  // }
+}
+
+
+//Save schedule content
 $(".btn").on("click", function () {
   let scheduleIndex = schedules.findIndex(x => x.id === $(this).parent().parent().attr("time"));
   let content = $(this).parent().siblings('.col-10').children().val();
@@ -8,13 +35,14 @@ $(".btn").on("click", function () {
   localStorage.setItem("schedules", JSON.stringify(schedules));
 });
 
+//Load new schedule or load existing
 function loadSchedule() {
   if (localStorage.getItem("schedules") !== null) {
     schedules = JSON.parse(localStorage.getItem("schedules"));
     var scheduleLoop = $('#time-table').children().children();
 
     scheduleLoop.each(function (index) {
-      $(this).children('.col-10').children().val(schedules[index].content);
+      $(this).children('.textarea-field').children().val(schedules[index].content);
     });
   }
   else {
@@ -69,3 +97,4 @@ function loadSchedule() {
 }
 
 loadSchedule();
+setInterval(renderTime, 1000);
